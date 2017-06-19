@@ -15,47 +15,47 @@ class App extends Component {
 
   async getGithubFollowers() {
     try {
-    this.setState({
-      error: '',
-      listItems: [],
-    })
-    const user = this.refs.userInput.value;
-
-    if (!user.trim()) {
-      return this.setState({
-        error: 'Search field must not be empty.',
+      this.setState({
+        error: '',
+        listItems: [],
       });
-    }
+      const user = this.refs.userInput.value;
 
-    const response = await fetch(`https://api.github.com/users/${user}/followers`);
-
-    const responseData = await response.json();
-
-    if (responseData.message) {
-      let error = responseData.message; 
-      if (error === 'Not Found') {
-        error = 'Cannot find user with specified name.'
+      if (!user.trim()) {
+        return this.setState({
+          error: 'Search field must not be empty.',
+        });
       }
-      return this.setState({
-        error,
-      })
-    }
-    if (!Array.isArray(responseData)) {
-      return this.setState({
-        error: 'Invalid Response'
+
+      const response = await fetch(`https://api.github.com/users/${user}/followers`);
+
+      const responseData = await response.json();
+
+      if (responseData.message) {
+        let error = responseData.message; 
+        if (error === 'Not Found') {
+          error = 'Cannot find user with specified name.';
+        }
+        return this.setState({
+          error,
+        });
+      }
+      if (!Array.isArray(responseData)) {
+        return this.setState({
+          error: 'Invalid Response'
+        });
+      }
+      if(!responseData.length) {
+        return this.setState({
+          error: 'No followers for the specified user could be found.'
+        });
+      }
+      const listItems = responseData.map((follower) => (
+        <GithubFollower follower={follower} />
+      ));
+      this.setState({
+        listItems,
       });
-    }
-    if(!responseData.length) {
-      return this.setState({
-        error: 'No followers for the specified user could be found.'
-      })
-    }
-    const listItems = responseData.map((follower) => (
-      <GithubFollower follower={follower} />
-    ));
-    this.setState({
-      listItems,
-    })
     } catch (ex) {
       this.setState({
         error: `${ex.name}: ${ex.message}`,
