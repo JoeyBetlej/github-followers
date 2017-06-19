@@ -20,6 +20,13 @@ class App extends Component {
       listItems: [],
     })
     const user = this.refs.userInput.value;
+
+    if (!user.trim()) {
+      return this.setState({
+        error: 'Search field must not be empty.',
+      });
+    }
+
     const response = await fetch(`https://api.github.com/users/${user}/followers`);
 
     const responseData = await response.json();
