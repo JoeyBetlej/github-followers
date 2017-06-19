@@ -23,7 +23,6 @@ class App extends Component {
     const response = await fetch(`https://api.github.com/users/${user}/followers`);
 
     const responseData = await response.json();
-     console.log(responseData)
 
     if (responseData.message) {
       let error = responseData.message; 
